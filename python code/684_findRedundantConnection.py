@@ -29,6 +29,36 @@
 
 class Solution:
     def findRedundantConnection(self, edges: List[List[int]]) -> List[int]:
+        '''
+        我的代码
+        '''
+        n = len(edges)
+        parent = [-1] * n
+        rank = [0] * n
+        def find(x,parent):
+            while parent[x] != -1:
+                x = parent[x]
+            return x
+        def unionset(x,y,parent,rank):
+            x_root = find(x,parent)
+            y_root = find(y,parent)
+            if x_root != y_root:
+                if rank[x_root] < rank[y_root]:
+                    parent[x_root] = y_root
+                elif rank[y_root] < rank[x_root]:
+                    parent[y_root] = x_root
+                else:
+                    parent[y_root] = x_root
+                    rank[x_root] += 1
+                return True
+            else:
+                return False
+        for x in edges:
+            if not unionset(x[0]-1,x[1]-1,parent,rank):
+                return x
+
+class Solution:
+    def findRedundantConnection(self, edges: List[List[int]]) -> List[int]:
     	'''
     	并查集  该学一下了
 
