@@ -38,7 +38,66 @@
 -106 <= xi, yi <= 106
 所有点 (xi, yi) 两两不同。
 
+class Solution:
+    def minCostConnectPoints(self, points: List[List[int]]) -> int:
+    	'''
+    	自己写的代码  
+    	一开始想用 findmin 函数来找 最小边 
+    	但是执行超时 
+    	排序就能通过
+    	难道排序比直接找最小更节省时间？排序是 n*log(n)  找的话 应该是 n^2
+    	'''
+        n = len(points)
+        if n == 1:return 0
+        edges = []
+        for i in range(n):
+            for j in range(i):
+                if i != j:
+                    edges.append((abs(points[i][0] - points[j][0]) + abs(points[i][1] - points[j][1]),i,j))
+        parent = [-1] * n
+        rank = [0] * n
+        def find(x,parent):
+            while parent[x] != -1:
+                x = parent[x]
+            return x
+        def unionset(x,y,parent,rank):
+            x_root = find(x,parent)
+            y_root = find(y,parent)
+            if x_root != y_root:
+                if rank[x_root] < rank[y_root]:
+                    parent[x_root] = y_root
+                elif rank[y_root] < rank[x_root]:
+                    parent[y_root] = x_root
+                else:
+                    parent[y_root] = x_root
+                    rank[x_root] += 1
+                return True
+            else:
+                return False
+        # def findmin(edges):
+        #     Min = edges[0]
+        #     ind = 0
+        #     for i,x in enumerate(edges):
+        #         if x[2] < Min[2]:
+        #             Min = x
+        #             ind = i
+        #     edges.pop(ind)
+        #     return Min
+        edges.sort()
+        cost = count = 0
+        for x,i,j in edges:
+            if unionset(i,j,parent,rank):
+                count += 1
+                cost += x
+                if count == n-1:break
+        return cost
+
+
+
 class DisjointSetUnion:
+	'''
+	官方题解
+	'''
 	def __init__(self, n):
 		self.n = n
 		self.rank = [1] * n
